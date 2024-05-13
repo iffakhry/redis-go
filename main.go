@@ -13,8 +13,8 @@ var ctx = context.Background()
 func main() {
 	rdb := redis.NewClient(&redis.Options{
 		Addr:     "localhost:6379",
-		Password: "qwertypoiu123", // no password set
-		DB:       0,               // use default DB
+		Password: "qwertypoiu123", // write "" if no password set
+		DB:       0,               // use default DB. Default=0
 	})
 
 	err := rdb.Set(ctx, "key", "value", 0).Err()
