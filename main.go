@@ -29,7 +29,7 @@ func main() {
 	ttl := time.Duration(3) * time.Second
 	err2 := rdb.Set(ctx, "key2", "value2", ttl).Err()
 	if err2 != nil {
-		panic(err)
+		panic(err2)
 	}
 
 	val, err := rdb.Get(ctx, "key").Result()
@@ -46,4 +46,29 @@ func main() {
 	} else {
 		fmt.Println("key2", val2)
 	}
+
+	// add key with prefix
+	prefix := "user:"
+	identifier := 1
+	keyWithPrefix := fmt.Sprintf("%s%d", prefix, identifier)
+	ttl3 := time.Duration(1) * time.Minute
+	err3 := rdb.Set(ctx, keyWithPrefix, "value1", ttl3).Err()
+	if err3 != nil {
+		panic(err3)
+	}
+
+	keys3 := rdb.Keys(ctx, prefix+"*").Val()
+	if len(keys3) == 0 {
+		fmt.Println("no keys found with prefix")
+		return
+	}
+	for _, key3 := range keys3 {
+		val3, err3a := rdb.Get(ctx, key3).Result()
+		if err3a != nil {
+			fmt.Println("error get value for key", key3)
+		} else {
+			fmt.Println("key", key3, "value", val3)
+		}
+	}
+
 }
